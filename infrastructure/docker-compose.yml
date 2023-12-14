@@ -1,0 +1,38 @@
+version: "3.5"
+services:
+  game_db:
+    container_name: game_db
+    image: postgres:12
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_PORT}:5432
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./var/pgdata:/var/lib/postgresql/data
+
+  # game_server:
+  #   container_name: game_server
+  #   build: ../core/
+  #   restart: unless-stopped
+  #   environment:
+  #     - REDIS_HOST=game_redis
+  #   ports:
+  #     - 4000:4000
+  #   depends_on:
+  #     - game_db
+    
+  game_redis:
+    container_name: game_redis
+    image: redis:7.2.2
+    restart: unless-stopped
+    volumes:
+      - ./redis-data:/data
+    ports:
+      - ${REDIS_PORT}:6379
+    # expose:
+    #   - 6379
