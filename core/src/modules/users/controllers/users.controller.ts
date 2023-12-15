@@ -1,11 +1,14 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import JwtAccessGuard from 'src/modules/auth/guards/jwtAccess.guard'
+import { UsersService } from '../services/users.service'
 
 @Controller('users')
 export class UsersController {
-  constructor() {}
+  constructor(private readonly userService: UsersService) {}
 
   @UseGuards(JwtAccessGuard)
   @Get()
-  getUsers() {}
+  findMany() {
+    return this.userService.findMany()
+  }
 }

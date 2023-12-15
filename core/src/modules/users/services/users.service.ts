@@ -7,6 +7,16 @@ import { UserModel } from 'src/infrastructure/database/models/user.model'
 export class UsersService {
   constructor(private readonly userRepo: UsersRepository) {}
 
+  async findMany() {
+    return this.userRepo.findMany({
+      select: {
+        id: true,
+        nickname: true,
+        createdAt: true,
+      },
+    })
+  }
+
   async create(data: UserCreateDto) {
     return this.userRepo.create({
       data,

@@ -7,7 +7,8 @@ import {
 import { Socket } from 'socket.io'
 import { AuthService } from '../services/auth.service'
 import { WsException } from '@nestjs/websockets'
-import { UnAuthorizedException } from 'src/modules/chat/exception/unauthorized.exception'
+import { UnAuthorizedException } from '../exceptions/unauthorized.exception'
+import { WsUnAuthorizedException } from '../exceptions/wsUnAuthorized.exception'
 
 @Injectable()
 export class WsAuthGuard implements CanActivate {
@@ -19,23 +20,13 @@ export class WsAuthGuard implements CanActivate {
     try {
       const token = socket.handshake.auth?.token
 
-      if (!token) throw new UnAuthorizedException('Токен не передан!')
+      console.log('token')
 
-      // const [
-      //   _,
-      //   token,
-      // ] = socket.handshake.headers.authorization.split(' ')
+      console.log(token)
 
-      // const memberId = await this.authService.getAuthMember(token)
+      if (!token) throw new WsUnAuthorizedException('Токен не передан!')
 
-      // socket.data.memberId = memberId
-
-      // if (!!memberId) {
-      //   // const roomsIds = await this.authService.getMemberRoomsIds(memberId)
-      //   socket.join(roomsIds)
-      // }
-
-      return false
+      return true
     } catch (e) {
       console.warn(e)
 

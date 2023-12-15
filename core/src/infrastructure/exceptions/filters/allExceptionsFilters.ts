@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch } from '@nestjs/common'
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets'
 import { Socket } from 'socket.io'
-import { SocketEventsEnum } from 'src/modules/chat/enums/socketEvents.enum'
+import { SocketsEventsEnum } from 'src/modules/sockets/enums/socketsEvents.enum'
 
 @Catch(WsException)
 export class AllWSExceptionFilter extends BaseWsExceptionFilter {
@@ -11,8 +11,8 @@ export class AllWSExceptionFilter extends BaseWsExceptionFilter {
     const client = host.switchToWs().getClient() as Socket
     const error = exception.getError()
     const details = error instanceof Object ? { ...error } : { message: error }
-    client.emit(SocketEventsEnum.CHAT_SERVICE_EXCEPTION, {
-      event: SocketEventsEnum.CHAT_SERVICE_EXCEPTION,
+    client.emit(SocketsEventsEnum.EXCEPTION, {
+      event: SocketsEventsEnum.EXCEPTION,
       ...details,
     })
     client.disconnect()

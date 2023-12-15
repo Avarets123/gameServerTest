@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
-import { getEnv } from './infrastructure/rmq/rmq.module'
+import { AppModule, getEnv } from './app.module'
 import { exceptionBoot } from './infrastructure/exceptions/bootExceptions'
 
 async function bootstrap() {

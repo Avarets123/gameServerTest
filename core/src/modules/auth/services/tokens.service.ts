@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { TokensType } from '../types/tokens.type'
 
 @Injectable()
-export class TokenGenerateService {
+export class TokensService {
   constructor(
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
@@ -24,6 +24,20 @@ export class TokenGenerateService {
         { id },
         { secret: this.REFRESH_SECRET },
       ),
+    }
+  }
+
+  verifyToken(token: string): string {
+    try {
+      const { id } = this.jwtService.verify(token, {
+        secret: this.ACCESS_SECRET,
+      })
+
+      return id
+    } catch (error) {
+      throw new BadRequestException({
+        message: 'Invalid access token',
+      })
     }
   }
 }
