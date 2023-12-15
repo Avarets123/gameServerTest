@@ -24,5 +24,6 @@ const host = process.env.REDIS_HOST
     RedisRepository,
     RedisService,
   ],
+  exports: [RedisService],
 })
 export class RedisModule {}

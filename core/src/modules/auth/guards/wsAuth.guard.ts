@@ -18,13 +18,11 @@ export class WsAuthGuard implements CanActivate {
     const socket = context.switchToWs().getClient<Socket>()
 
     try {
-      const token = socket.handshake.auth?.token
 
-      console.log('token')
+      const userId = socket.data.userId
 
-      console.log(token)
 
-      if (!token) throw new WsUnAuthorizedException('Токен не передан!')
+      if (!userId) throw new WsUnAuthorizedException('')
 
       return true
     } catch (e) {

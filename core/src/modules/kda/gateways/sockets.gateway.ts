@@ -13,24 +13,44 @@ import { WsAuthGuard } from '../../auth/guards/wsAuth.guard'
 import { WSValidationPipe } from 'src/infrastructure/validation/validation.boot'
 import { AuthService } from 'src/modules/auth/services/auth.service'
 import { SocketsEventsEnum } from '../enums/socketsEvents.enum'
+import { IncrementKdaDto } from '../dto/incrementKda.dto'
+import { KdaService } from '../services/kda.service'
 
 @UseFilters(AllWSExceptionFilter)
-@WebSocketGateway({ cors: {},  })
+@WebSocketGateway({ cors: {} })
 export class SocketsGateway implements OnGatewayConnection {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly kdaService: KdaService,
+  ) {}
 
   @WebSocketServer()
   server: Server
 
   @UsePipes(WSValidationPipe)
   @UseGuards(WsAuthGuard)
-  @SubscribeMessage('check')
-  async eventMessageCreate(
-    @MessageBody() body,
+  @SubscribeMessage(SocketsEventsEnum.KDA_GET)
+  async eventKdaGet(
+    @MessageBody() body: Omit<IncrementKdaDto, 'incrementField'>,
     @ConnectedSocket() socket: Socket,
   ) {
-    body.clientData = socket.data
-    socket.emit('okey', body)
+    const res = await this.kdaService.findUserKda(body)
+
+    socket.emit(SocketsEventsEnum.KDA_GET, res)
+  }
+
+  @UsePipes(WSValidationPipe)
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage(SocketsEventsEnum.KDA_INCREMENT)
+  async eventKdaIncrement(
+    @MessageBody() body: IncrementKdaDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    await this.kdaService.incrementKda(body)
+
+    const res = await this.kdaService.findUserKda(body)
+
+    socket.emit(SocketsEventsEnum.KDA_GET, res)
   }
 
   async handleConnection(client: Socket) {

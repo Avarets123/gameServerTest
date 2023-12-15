@@ -4,14 +4,14 @@ import { AuthModule } from './modules/auth/auth.module'
 import { MapperModule } from './infrastructure/automapper/mapper.module'
 import { RedisModule } from './infrastructure/redis/redis.module'
 import { ConfigModule } from '@nestjs/config'
-import { SocketsModule } from './modules/sockets/sockets.module'
+import { KdaModule } from './modules/kda/kda.module'
 
 export const getEnv = (env: string) => process.env[env]
 
 @Module({
   imports: [
     DatabaseModule,
-    SocketsModule,
+    KdaModule,
     ConfigModule.forRoot({ isGlobal: true }),
 
     RedisModule,

@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch } from '@nestjs/common'
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets'
 import { Socket } from 'socket.io'
-import { SocketsEventsEnum } from 'src/modules/sockets/enums/socketsEvents.enum'
+import { SocketsEventsEnum } from 'src/modules/kda/enums/socketsEvents.enum'
 
 @Catch(WsException)
 export class AllWSExceptionFilter extends BaseWsExceptionFilter {

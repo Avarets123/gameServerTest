@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { TokensType } from '../types/tokens.type'
+import { WsException } from '@nestjs/websockets'
 
 @Injectable()
 export class TokensService {
@@ -27,7 +28,7 @@ export class TokensService {
     }
   }
 
-  verifyToken(token: string): string {
+  verifyToken(token: string, ws = false): string {
     try {
       const { id } = this.jwtService.verify(token, {
         secret: this.ACCESS_SECRET,
@@ -35,8 +36,16 @@ export class TokensService {
 
       return id
     } catch (error) {
+      const message = 'Invalid access token'
+
+      if (ws) {
+        throw new WsException({
+          message,
+        })
+      }
+
       throw new BadRequestException({
-        message: 'Invalid access token',
+        message,
       })
     }
   }

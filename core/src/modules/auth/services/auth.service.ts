@@ -59,9 +59,11 @@ export class AuthService {
   }
 
   async verifyUserByToken(token: string) {
+
+    
     if (!token) throw new WsUnAuthorizedException('Токен не передан!')
 
-    const userId = this.tokensService.verifyToken(token)
+    const userId = this.tokensService.verifyToken(token, true)
 
     const hasUser = await this.usersService.findUserById(userId)
 
