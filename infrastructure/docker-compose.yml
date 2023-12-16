@@ -12,25 +12,25 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./var/pgdata:/var/lib/postgresql/data
-    ports:
-      - ${POSTGRES_PORT}:5432
-    # expose:
-    #   - 5432
+    # ports:
+    #   - ${POSTGRES_PORT}:5432
+    expose:
+      - 5432
 
-  # game_server:
-  #   container_name: game_server
-  #   build: ../core/
-  #   restart: unless-stopped
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@game_db:5432/${POSTGRES_DB}?schema=public
-  #     - REDIS_HOST=game_redis
-  #   ports:
-  #     - ${SERVER_PORT}:${SERVER_PORT}
-  #   depends_on:
-  #     - game_db
-  #     - game_redis
+  game_server:
+    container_name: game_server
+    build: ../core/
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@game_db:5432/${POSTGRES_DB}?schema=public
+      - REDIS_HOST=game_redis
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - game_db
+      - game_redis
 
   game_redis:
     container_name: game_redis
@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./redis-data:/data
-    ports:
-      - ${REDIS_PORT}:6379
-    # expose:
-    #   - 6379
+    # ports:
+    #   - ${REDIS_PORT}:6379
+    expose:
+      - 6379
