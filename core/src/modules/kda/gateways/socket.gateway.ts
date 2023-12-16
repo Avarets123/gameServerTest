@@ -10,13 +10,13 @@ import { Server, Socket } from 'socket.io'
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common'
 import { AllWSExceptionFilter } from 'src/infrastructure/exceptions/filters/allExceptionsFilters'
 import { WsAuthGuard } from '../../auth/guards/wsAuth.guard'
-import { WSValidationPipe } from 'src/infrastructure/validation/validation.boot'
+import { WsValidationPipe } from 'src/infrastructure/validation/validation.boot'
 import { AuthService } from 'src/modules/auth/services/auth.service'
 import { SocketsEventsEnum } from '../enums/socketsEvents.enum'
 import { IncrementKdaDto } from '../dto/incrementKda.dto'
 import { KdaService } from '../services/kda.service'
-
-
+import { setTokenGetter } from '../utils'
+import { ConfigService } from '@nestjs/config'
 
 @UseFilters(AllWSExceptionFilter)
 @WebSocketGateway({ cors: {} })
@@ -24,12 +24,17 @@ export class SocketGateway implements OnGatewayConnection {
   constructor(
     private readonly authService: AuthService,
     private readonly kdaService: KdaService,
+    private readonly config: ConfigService,
   ) {}
+
+  private readonly getToken = setTokenGetter(
+    this.config.get('AUTH_TYPE'),
+  )
 
   @WebSocketServer()
   server: Server
 
-  @UsePipes(WSValidationPipe)
+  @UsePipes(WsValidationPipe)
   @UseGuards(WsAuthGuard)
   @SubscribeMessage(SocketsEventsEnum.KDA_GET)
   async eventKdaGet(
@@ -41,7 +46,7 @@ export class SocketGateway implements OnGatewayConnection {
     socket.emit(SocketsEventsEnum.KDA_GET, res)
   }
 
-  @UsePipes(WSValidationPipe)
+  @UsePipes(WsValidationPipe)
   @UseGuards(WsAuthGuard)
   @SubscribeMessage(SocketsEventsEnum.KDA_INCREMENT)
   async eventKdaIncrement(
@@ -58,10 +63,8 @@ export class SocketGateway implements OnGatewayConnection {
   async handleConnection(client: Socket) {
     try {
       // const token = client.handshake.auth.token
-      const token = client.handshake.headers.authorization || ''
-      const userId = await this.authService.verifyUserByToken(
-        token.split(' ')[1],
-      )
+      const token = this.getToken(client)
+      const userId = await this.authService.verifyUserByToken(token)
       client.data.userId = userId
     } catch (error) {
       console.error(error)

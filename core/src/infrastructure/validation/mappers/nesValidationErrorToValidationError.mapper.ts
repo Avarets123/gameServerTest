@@ -2,12 +2,15 @@ import {
   HttpStatus,
   ValidationError as NestValidationError,
 } from '@nestjs/common'
-import { ValidationError } from '../errors/validation.error'
+import { ValidationError, ValidationErrorWs } from '../errors/validation.error'
 import { ValidationErrorResponse } from '../errors/validationError.response'
 import { ValidationException } from '../errors/validation.exception'
 
 export class NestValidationErrorToValidationErrorMapper {
-  constructor(private validationErrors: NestValidationError[]) {}
+  constructor(
+    private validationErrors: NestValidationError[],
+    private readonly ws: boolean,
+  ) {}
 
   get code(): string {
     return 'VALIDATION_EXCEPTION'
@@ -17,6 +20,9 @@ export class NestValidationErrorToValidationErrorMapper {
   }
 
   map() {
+    if (this.ws) {
+      return new ValidationErrorWs(this.exceptionResponse, this.status)
+    }
     return new ValidationError(this.exceptionResponse, this.status)
   }
 
