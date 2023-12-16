@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { SocketsGateway } from './gateways/sockets.gateway'
+import { SocketGateway } from './gateways/socket.gateway'
 import { AuthModule } from '../auth/auth.module'
 import { KdaController } from './controllers/kda.controller'
 import { KdaService } from './services/kda.service'
@@ -8,7 +8,7 @@ import { KdaService } from './services/kda.service'
   imports: [AuthModule],
   controllers: [KdaController],
   providers: [
-    SocketsGateway,
+    SocketGateway,
     KdaService,
   ],
 })

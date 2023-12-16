@@ -3,7 +3,7 @@ import { Redis } from 'ioredis'
 import { RedisRepository } from './repository/redis.repository'
 import { RedisService } from './services/redis.service'
 
-const port = +process.env.REDIS_PORT
+const port = +process.env.REDIS_PORT || 6379
 const host = process.env.REDIS_HOST
 
 @Global()

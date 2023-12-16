@@ -16,9 +16,11 @@ import { SocketsEventsEnum } from '../enums/socketsEvents.enum'
 import { IncrementKdaDto } from '../dto/incrementKda.dto'
 import { KdaService } from '../services/kda.service'
 
+
+
 @UseFilters(AllWSExceptionFilter)
 @WebSocketGateway({ cors: {} })
-export class SocketsGateway implements OnGatewayConnection {
+export class SocketGateway implements OnGatewayConnection {
   constructor(
     private readonly authService: AuthService,
     private readonly kdaService: KdaService,
