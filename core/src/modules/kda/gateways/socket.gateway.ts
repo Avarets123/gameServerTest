@@ -27,9 +27,7 @@ export class SocketGateway implements OnGatewayConnection {
     private readonly config: ConfigService,
   ) {}
 
-  private readonly getToken = setTokenGetter(
-    this.config.get('AUTH_TYPE'),
-  )
+  private readonly getToken = setTokenGetter(this.config.get('AUTH_TYPE'))
 
   @WebSocketServer()
   server: Server

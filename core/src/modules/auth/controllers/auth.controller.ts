@@ -16,7 +16,7 @@ import { AuthUser } from '../decorators/authUser.decorator'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   signUp(@Body() body: UserCreateDto) {
     return this.authService.signUp(body)

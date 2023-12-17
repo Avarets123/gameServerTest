@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { RedisService } from 'src/infrastructure/redis/services/redis.service'
 import { IncrementKdaDto } from '../dto/incrementKda.dto'
 import { KdaType, UserKdaResponseType } from '../types/kda.type'
-import { getUserKey } from 'src/modules/helpers'
+import { getUserKey } from 'src/modules/kda/helpers'
 
 @Injectable()
 export class KdaService {
