@@ -12,25 +12,25 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./var/pgdata:/var/lib/postgresql/data
-    # ports:
-    #   - ${POSTGRES_PORT}:5432
-    expose:
-      - 5432
-
-  game_server:
-    container_name: game_server
-    build: ../core/
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@game_db:5432/${POSTGRES_DB}?schema=public
-      - REDIS_HOST=game_redis
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
-    depends_on:
-      - game_db
-      - game_redis
+      - ${POSTGRES_PORT}:5432
+    # expose:
+    #   - 5432
+
+  # game_server:
+  #   container_name: game_server
+  #   build: ../core/
+  #   restart: unless-stopped
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@game_db:5432/${POSTGRES_DB}?schema=public
+  #     - REDIS_HOST=game_redis
+  #   ports:
+  #     - ${SERVER_PORT}:${SERVER_PORT}
+  #   depends_on:
+  #     - game_db
+  #     - game_redis
 
   game_redis:
     container_name: game_redis
@@ -38,19 +38,36 @@ services:
     restart: unless-stopped
     volumes:
       - ./redis-data:/data
-    # ports:
-    #   - ${REDIS_PORT}:6379
-    expose:
-      - 6379
-
-  game_prometheus:
-    image: prom/prometheus:latest
-    container_name: game_prometheus
     ports:
-      - 9090:9090
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    depends_on:
-      - game_server 
+      - ${REDIS_PORT}:6379
+    # expose:
+    #   - 6379
+
+  # game_prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: game_prometheus
+  #   ports:
+  #     - 9090:9090
+  #   command:
+  #     - --config.file=/etc/prometheus/prometheus.yml
+  #   volumes:
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #   depends_on:
+  #     - game_server 
+
+  # game_grafana:
+  #   container_name: game_grafana
+  #   image: grafana/grafana:latest
+  #   restart: always
+  #   # volumes:
+  #   #   - grafana_data:/var/lib/grafana
+  #   #   - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
+  #   #   - ./config/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+  #   ports:
+  #     - 3010:3000
+  #   depends_on:
+  #     - game_prometheus
+
+# volumes:
+#   grafana_data: {}
+

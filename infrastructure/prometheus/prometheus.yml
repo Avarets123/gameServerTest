@@ -1,7 +1,13 @@
 global:
-  scrape_interval: "10s"
+  scrape_interval: "5s"
 
 scrape_configs:
+
+  - job_name: game_prometheus
+    static_configs:
+      - targets:
+          - "game_prometheus:9090"
+
   - job_name: game_server
     static_configs:   
       - targets:
